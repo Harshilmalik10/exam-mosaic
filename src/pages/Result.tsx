@@ -1,21 +1,43 @@
 import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockTests } from "@/data/mockTests";
 import { Answer, Test, TestResult } from "@/types/exam";
 import { cn } from "@/lib/utils";
 import { QuestionNavigation } from "@/components/QuestionNavigation";
+import { useToast } from "@/components/ui/use-toast";
 
 const Result = () => {
   const { id } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [result, setResult] = useState<TestResult | null>(null);
   const [test, setTest] = useState<Test | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
 
   useEffect(() => {
     const currentTest = mockTests.find((t) => t.id === Number(id));
-    if (!currentTest || !location.state?.answers) return;
+    
+    if (!currentTest) {
+      toast({
+        title: "Test not found",
+        description: "The requested test could not be found.",
+        variant: "destructive",
+      });
+      navigate("/");
+      return;
+    }
+
+    if (!location.state?.answers) {
+      toast({
+        title: "No test data",
+        description: "Please complete the test first to view results.",
+        variant: "destructive",
+      });
+      navigate(`/test/${id}`);
+      return;
+    }
 
     const answers = location.state.answers as Answer[];
     const timeTaken = location.state.timeTaken as number;
@@ -38,12 +60,14 @@ const Result = () => {
       timeTaken: Math.floor(timeTaken / 1000),
       answers,
     });
-  }, [id, location.state]);
+  }, [id, location.state, navigate, toast]);
 
-  if (!test || !result) return null;
+  if (!test || !result) {
+    return null;
+  }
 
   const correctAnswerIds = test.questions
-    .filter((q, index) => 
+    .filter((q) => 
       result.answers.find(a => a.questionId === q.id)?.selectedOption === q.correctAnswer
     )
     .map(q => q.id);
@@ -95,7 +119,12 @@ const Result = () => {
               <Card key={question.id} id={`question-${index + 1}`}>
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between mb-4">
-                    <h3 className="text-lg font-semibold">Question {index + 1}</h3>
+                    <div>
+                      <h3 className="text-lg font-semibold">Question {index + 1}</h3>
+                      {question.category && (
+                        <span className="text-sm text-gray-500">Category: {question.category}</span>
+                      )}
+                    </div>
                     <span className={cn(
                       "px-3 py-1 rounded-full text-sm",
                       isCorrect ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
