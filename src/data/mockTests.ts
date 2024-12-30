@@ -31,26 +31,94 @@ export const mockTests: Test[] = [
     id: 2,
     title: "Basic Physics",
     subject: "Physics",
-    description: "Test your understanding of basic physics concepts",
+    description: "Test your understanding of basic physics concepts across Optics, Thermodynamics, and Electromagnetics",
     duration: 45,
     negativeMarking: 0.25,
     questions: [
+      // Optics Questions
       {
         id: 3,
-        text: "What is the SI unit of force?",
-        options: ["Watt", "Newton", "Joule", "Pascal"],
+        text: "What is the phenomenon of splitting of white light into its component colors called?",
+        options: ["Reflection", "Dispersion", "Diffraction", "Interference"],
         correctAnswer: 1,
-        explanation: "The SI unit of force is Newton (N)",
+        explanation: "Dispersion is the phenomenon where white light splits into its component colors when passing through a prism",
         subject: "Physics",
+        category: "Optics"
       },
       {
         id: 4,
+        text: "What type of mirror is used in a vehicle's headlight?",
+        options: ["Convex", "Concave", "Plane", "Cylindrical"],
+        correctAnswer: 1,
+        explanation: "Concave mirrors are used in vehicle headlights as they can focus light into a beam",
+        subject: "Physics",
+        category: "Optics"
+      },
+      {
+        id: 5,
         text: "What is the speed of light in vacuum?",
         options: ["299,792 km/s", "299,792,458 m/s", "300,000 km/s", "3 × 10⁸ m/s"],
         correctAnswer: 1,
         explanation: "The speed of light in vacuum is approximately 299,792,458 meters per second",
         subject: "Physics",
+        category: "Optics"
       },
+      // Thermodynamics Questions
+      {
+        id: 6,
+        text: "What is the first law of thermodynamics also known as?",
+        options: ["Law of entropy", "Conservation of energy", "Heat transfer law", "Gas law"],
+        correctAnswer: 1,
+        explanation: "The first law of thermodynamics is also known as the law of conservation of energy",
+        subject: "Physics",
+        category: "Thermodynamics"
+      },
+      {
+        id: 7,
+        text: "In which process does the temperature remain constant?",
+        options: ["Adiabatic", "Isothermal", "Isobaric", "Isochoric"],
+        correctAnswer: 1,
+        explanation: "In an isothermal process, the temperature remains constant throughout",
+        subject: "Physics",
+        category: "Thermodynamics"
+      },
+      {
+        id: 8,
+        text: "What is the absolute zero temperature in Celsius?",
+        options: ["-273.15°C", "-300°C", "-250°C", "-100°C"],
+        correctAnswer: 0,
+        explanation: "Absolute zero is -273.15°C or 0 Kelvin",
+        subject: "Physics",
+        category: "Thermodynamics"
+      },
+      // Electromagnetic Questions
+      {
+        id: 9,
+        text: "What is the SI unit of electric current?",
+        options: ["Volt", "Ampere", "Ohm", "Watt"],
+        correctAnswer: 1,
+        explanation: "The SI unit of electric current is the Ampere (A)",
+        subject: "Physics",
+        category: "Electromagnetics"
+      },
+      {
+        id: 10,
+        text: "Which law relates current, voltage, and resistance?",
+        options: ["Faraday's law", "Ohm's law", "Coulomb's law", "Ampere's law"],
+        correctAnswer: 1,
+        explanation: "Ohm's law states that voltage equals current times resistance (V=IR)",
+        subject: "Physics",
+        category: "Electromagnetics"
+      },
+      {
+        id: 11,
+        text: "What happens to the force between two charges when the distance between them is doubled?",
+        options: ["Doubles", "Halves", "Becomes one-fourth", "Quadruples"],
+        correctAnswer: 2,
+        explanation: "According to Coulomb's law, the force becomes one-fourth when distance is doubled",
+        subject: "Physics",
+        category: "Electromagnetics"
+      }
     ],
   },
   {
