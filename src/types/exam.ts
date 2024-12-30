@@ -5,6 +5,7 @@ export interface Question {
   correctAnswer: number;
   explanation: string;
   subject: string;
+  category?: string; // Added optional category field
 }
 
 export interface Test {
