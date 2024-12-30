@@ -62,7 +62,7 @@ const Test = () => {
     <div className="min-h-screen bg-gray-50 pt-20 pb-20">
       <TestTimer duration={test.duration} onTimeUp={handleSubmit} />
       
-      <div className="container max-w-4xl">
+      <div className="container max-w-4xl ml-48">
         <div className="bg-white rounded-lg p-8 shadow-lg">
           <div className="mb-8">
             <h2 className="text-2xl font-bold mb-6">

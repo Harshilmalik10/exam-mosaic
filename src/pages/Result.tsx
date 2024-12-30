@@ -4,12 +4,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { mockTests } from "@/data/mockTests";
 import { Answer, Test, TestResult } from "@/types/exam";
 import { cn } from "@/lib/utils";
+import { QuestionNavigation } from "@/components/QuestionNavigation";
 
 const Result = () => {
   const { id } = useParams();
   const location = useLocation();
   const [result, setResult] = useState<TestResult | null>(null);
   const [test, setTest] = useState<Test | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
 
   useEffect(() => {
     const currentTest = mockTests.find((t) => t.id === Number(id));
@@ -40,6 +42,12 @@ const Result = () => {
 
   if (!test || !result) return null;
 
+  const correctAnswerIds = test.questions
+    .filter((q, index) => 
+      result.answers.find(a => a.questionId === q.id)?.selectedOption === q.correctAnswer
+    )
+    .map(q => q.id);
+
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container max-w-4xl">
@@ -59,15 +67,24 @@ const Result = () => {
               </div>
               <div className="p-4 bg-muted rounded-lg">
                 <p className="text-sm text-gray-600">Correct Answers</p>
-                <p className="text-2xl font-bold text-success">{result.correctAnswers}</p>
+                <p className="text-2xl font-bold text-green-500">{result.correctAnswers}</p>
               </div>
               <div className="p-4 bg-muted rounded-lg">
                 <p className="text-sm text-gray-600">Incorrect Answers</p>
-                <p className="text-2xl font-bold text-error">{result.incorrectAnswers}</p>
+                <p className="text-2xl font-bold text-red-500">{result.incorrectAnswers}</p>
               </div>
             </div>
           </CardContent>
         </Card>
+
+        <QuestionNavigation
+          totalQuestions={test.questions.length}
+          currentQuestion={currentQuestion}
+          answers={result.answers}
+          onQuestionSelect={setCurrentQuestion}
+          correctAnswers={correctAnswerIds}
+          showResults={true}
+        />
 
         <div className="space-y-6">
           {test.questions.map((question, index) => {
@@ -75,13 +92,13 @@ const Result = () => {
             const isCorrect = answer?.selectedOption === question.correctAnswer;
 
             return (
-              <Card key={question.id}>
+              <Card key={question.id} id={`question-${index + 1}`}>
                 <CardContent className="pt-6">
                   <div className="flex items-start justify-between mb-4">
                     <h3 className="text-lg font-semibold">Question {index + 1}</h3>
                     <span className={cn(
                       "px-3 py-1 rounded-full text-sm",
-                      isCorrect ? "bg-success/10 text-success" : "bg-error/10 text-error"
+                      isCorrect ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"
                     )}>
                       {isCorrect ? "Correct" : "Incorrect"}
                     </span>
@@ -93,8 +110,8 @@ const Result = () => {
                         key={optionIndex}
                         className={cn(
                           "p-3 rounded-lg",
-                          optionIndex === question.correctAnswer && "bg-success/10",
-                          answer?.selectedOption === optionIndex && optionIndex !== question.correctAnswer && "bg-error/10"
+                          optionIndex === question.correctAnswer && "bg-green-100",
+                          answer?.selectedOption === optionIndex && optionIndex !== question.correctAnswer && "bg-red-100"
                         )}
                       >
                         {option}
