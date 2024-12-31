@@ -108,7 +108,7 @@ const Test = () => {
             
             <RadioGroup
               onValueChange={handleAnswer}
-              value={answers.find((a) => a.questionId === currentQuestionData.id)?.selectedOption?.toString() || ""}
+              value={answers.find((a) => a.questionId === currentQuestionData.id)?.selectedOption?.toString()}
             >
               {currentQuestionData.options.map((option, index) => (
                 <div key={index} className="flex items-center space-x-2 mb-4">
@@ -139,46 +139,48 @@ const Test = () => {
           </div>
         </div>
 
-        <div className="mt-8">
-          {Object.entries(questionsByCategory).map(([category, questions]) => (
-            <div key={category} className="mb-6">
-              <h3 className="text-lg font-semibold mb-2">{category}</h3>
-              <div className="grid grid-cols-5 gap-2">
-                {questions.map((question) => {
-                  const questionIndex = test.questions.findIndex(q => q.id === question.id);
-                  const isAnswered = answers.some(a => a.questionId === question.id);
-                  const isVisited = visitedQuestions.includes(question.id);
-                  const isCurrent = currentQuestion === questionIndex;
+        <div className="fixed left-4 top-32 bg-white p-4 rounded-lg shadow-lg w-40">
+          <QuestionNavigation
+            totalQuestions={test.questions.length}
+            currentQuestion={currentQuestion}
+            answers={answers}
+            visitedQuestions={visitedQuestions}
+            onQuestionSelect={setCurrentQuestion}
+          />
 
-                  return (
-                    <button
-                      key={question.id}
-                      onClick={() => setCurrentQuestion(questionIndex)}
-                      className={cn(
-                        "w-8 h-8 rounded-full text-sm font-medium transition-colors",
-                        isAnswered && "bg-green-500 text-white",
-                        !isAnswered && isVisited && "bg-yellow-500 text-white",
-                        !isAnswered && !isVisited && "bg-gray-200",
-                        isCurrent && "ring-2 ring-primary"
-                      )}
-                    >
-                      {questionIndex + 1}
-                    </button>
-                  );
-                })}
+          <div className="mt-6 space-y-4 text-sm">
+            {Object.entries(questionsByCategory).map(([category, questions]) => (
+              <div key={category} className="space-y-2">
+                <h3 className="font-semibold text-xs text-gray-600">{category}</h3>
+                <div className="grid grid-cols-4 gap-1">
+                  {questions.map((question) => {
+                    const questionIndex = test.questions.findIndex(q => q.id === question.id);
+                    const isAnswered = answers.some(a => a.questionId === question.id);
+                    const isVisited = visitedQuestions.includes(question.id);
+                    const isCurrent = currentQuestion === questionIndex;
+
+                    return (
+                      <button
+                        key={question.id}
+                        onClick={() => setCurrentQuestion(questionIndex)}
+                        className={cn(
+                          "w-6 h-6 rounded-full text-xs font-medium transition-colors",
+                          isAnswered && "bg-green-500 text-white",
+                          !isAnswered && isVisited && "bg-yellow-500 text-white",
+                          !isAnswered && !isVisited && "bg-gray-200",
+                          isCurrent && "ring-2 ring-primary"
+                        )}
+                      >
+                        {questionIndex + 1}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-
-      <QuestionNavigation
-        totalQuestions={test.questions.length}
-        currentQuestion={currentQuestion}
-        answers={answers}
-        visitedQuestions={visitedQuestions}
-        onQuestionSelect={setCurrentQuestion}
-      />
     </div>
   );
 };
