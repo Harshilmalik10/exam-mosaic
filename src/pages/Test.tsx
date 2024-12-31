@@ -148,7 +148,7 @@ const Test = () => {
             onQuestionSelect={setCurrentQuestion}
           />
 
-          <div className="mt-6 space-y-4 text-sm">
+          <div className="mt-8 space-y-4 text-sm">
             {Object.entries(questionsByCategory).map(([category, questions]) => (
               <div key={category} className="space-y-2">
                 <h3 className="font-semibold text-xs text-gray-600">{category}</h3>

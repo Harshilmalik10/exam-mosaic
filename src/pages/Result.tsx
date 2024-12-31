@@ -110,7 +110,7 @@ const Result = () => {
           showResults={true}
         />
 
-        <div className="space-y-6">
+        <div className="space-y-6 mt-8">
           {test.questions.map((question, index) => {
             const answer = result.answers.find((a) => a.questionId === question.id);
             const isCorrect = answer?.selectedOption === question.correctAnswer;
@@ -147,12 +147,10 @@ const Result = () => {
                       </div>
                     ))}
                   </div>
-                  {!isCorrect && (
-                    <div className="mt-4 p-4 bg-muted rounded-lg">
-                      <p className="text-sm font-medium">Explanation:</p>
-                      <p className="text-sm text-gray-600">{question.explanation}</p>
-                    </div>
-                  )}
+                  <div className="mt-4 p-4 bg-muted rounded-lg">
+                    <p className="text-sm font-medium">Explanation:</p>
+                    <p className="text-sm text-gray-600">{question.explanation}</p>
+                  </div>
                 </CardContent>
               </Card>
             );
