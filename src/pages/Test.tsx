@@ -8,6 +8,7 @@ import { QuestionNavigation } from "@/components/QuestionNavigation";
 import { mockTests } from "@/data/mockTests";
 import { Answer, Test as TestType, Question } from "@/types/exam";
 import { useToast } from "@/components/ui/use-toast";
+import { cn } from "@/lib/utils";
 
 interface CategoryQuestions {
   [key: string]: Question[];
