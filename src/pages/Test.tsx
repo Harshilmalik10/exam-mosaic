@@ -6,8 +6,12 @@ import { Label } from "@/components/ui/label";
 import { TestTimer } from "@/components/TestTimer";
 import { QuestionNavigation } from "@/components/QuestionNavigation";
 import { mockTests } from "@/data/mockTests";
-import { Answer, Test as TestType } from "@/types/exam";
+import { Answer, Test as TestType, Question } from "@/types/exam";
 import { useToast } from "@/components/ui/use-toast";
+
+interface CategoryQuestions {
+  [key: string]: Question[];
+}
 
 const Test = () => {
   const { id } = useParams();
@@ -16,7 +20,9 @@ const Test = () => {
   const [test, setTest] = useState<TestType | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
+  const [visitedQuestions, setVisitedQuestions] = useState<number[]>([]);
   const [startTime] = useState<number>(Date.now());
+  const [questionsByCategory, setQuestionsByCategory] = useState<CategoryQuestions>({});
 
   useEffect(() => {
     const foundTest = mockTests.find((t) => t.id === Number(id));
@@ -30,7 +36,29 @@ const Test = () => {
       return;
     }
     setTest(foundTest);
+
+    // Organize questions by category
+    const categorized = foundTest.questions.reduce((acc: CategoryQuestions, question) => {
+      const category = question.category || 'Uncategorized';
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(question);
+      return acc;
+    }, {});
+    setQuestionsByCategory(categorized);
   }, [id, navigate, toast]);
+
+  useEffect(() => {
+    if (test?.questions[currentQuestion]?.id) {
+      setVisitedQuestions(prev => {
+        if (!prev.includes(test.questions[currentQuestion].id)) {
+          return [...prev, test.questions[currentQuestion].id];
+        }
+        return prev;
+      });
+    }
+  }, [currentQuestion, test]);
 
   if (!test) return null;
 
@@ -65,14 +93,21 @@ const Test = () => {
       <div className="container max-w-4xl ml-48">
         <div className="bg-white rounded-lg p-8 shadow-lg">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold mb-6">
-              Question {currentQuestion + 1} of {test.questions.length}
-            </h2>
+            <div className="flex justify-between items-start mb-6">
+              <div>
+                <h2 className="text-2xl font-bold">
+                  Question {currentQuestion + 1} of {test.questions.length}
+                </h2>
+                {currentQuestionData.category && (
+                  <span className="text-sm text-gray-500">Category: {currentQuestionData.category}</span>
+                )}
+              </div>
+            </div>
             <p className="text-lg mb-6">{currentQuestionData.text}</p>
             
             <RadioGroup
               onValueChange={handleAnswer}
-              value={answers.find((a) => a.questionId === currentQuestionData.id)?.selectedOption.toString()}
+              value={answers.find((a) => a.questionId === currentQuestionData.id)?.selectedOption?.toString() || ""}
             >
               {currentQuestionData.options.map((option, index) => (
                 <div key={index} className="flex items-center space-x-2 mb-4">
@@ -102,12 +137,45 @@ const Test = () => {
             )}
           </div>
         </div>
+
+        <div className="mt-8">
+          {Object.entries(questionsByCategory).map(([category, questions]) => (
+            <div key={category} className="mb-6">
+              <h3 className="text-lg font-semibold mb-2">{category}</h3>
+              <div className="grid grid-cols-5 gap-2">
+                {questions.map((question) => {
+                  const questionIndex = test.questions.findIndex(q => q.id === question.id);
+                  const isAnswered = answers.some(a => a.questionId === question.id);
+                  const isVisited = visitedQuestions.includes(question.id);
+                  const isCurrent = currentQuestion === questionIndex;
+
+                  return (
+                    <button
+                      key={question.id}
+                      onClick={() => setCurrentQuestion(questionIndex)}
+                      className={cn(
+                        "w-8 h-8 rounded-full text-sm font-medium transition-colors",
+                        isAnswered && "bg-green-500 text-white",
+                        !isAnswered && isVisited && "bg-yellow-500 text-white",
+                        !isAnswered && !isVisited && "bg-gray-200",
+                        isCurrent && "ring-2 ring-primary"
+                      )}
+                    >
+                      {questionIndex + 1}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       <QuestionNavigation
         totalQuestions={test.questions.length}
         currentQuestion={currentQuestion}
         answers={answers}
+        visitedQuestions={visitedQuestions}
         onQuestionSelect={setCurrentQuestion}
       />
     </div>

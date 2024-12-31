@@ -5,6 +5,7 @@ interface QuestionNavigationProps {
   totalQuestions: number;
   currentQuestion: number;
   answers: Answer[];
+  visitedQuestions?: number[];
   onQuestionSelect: (index: number) => void;
   correctAnswers?: number[]; // Optional prop for results page
   showResults?: boolean; // Flag to determine if we're on results page
@@ -14,6 +15,7 @@ export const QuestionNavigation = ({
   totalQuestions,
   currentQuestion,
   answers,
+  visitedQuestions = [],
   onQuestionSelect,
   correctAnswers,
   showResults = false,
@@ -25,6 +27,7 @@ export const QuestionNavigation = ({
         {Array.from({ length: totalQuestions }).map((_, index) => {
           const answer = answers.find((a) => a.questionId === index + 1);
           const isAnswered = answers.some((a) => a.questionId === index + 1);
+          const isVisited = visitedQuestions.includes(index + 1);
           const isCurrent = currentQuestion === index;
           const isCorrect = showResults && correctAnswers?.includes(index + 1);
           const isIncorrect = showResults && answer && !correctAnswers?.includes(index + 1);
@@ -35,9 +38,10 @@ export const QuestionNavigation = ({
               onClick={() => onQuestionSelect(index)}
               className={cn(
                 "w-8 h-8 rounded-full text-sm font-medium transition-colors",
-                isAnswered && !showResults && "bg-primary text-white",
+                !showResults && isAnswered && "bg-green-500 text-white", // Answered
+                !showResults && !isAnswered && isVisited && "bg-yellow-500 text-white", // Visited but not answered
+                !showResults && !isAnswered && !isVisited && "bg-gray-200", // Not visited
                 isCurrent && "ring-2 ring-primary",
-                !isAnswered && !isCurrent && !showResults && "bg-gray-100",
                 showResults && isCorrect && "bg-green-500 text-white",
                 showResults && isIncorrect && "bg-red-500 text-white",
                 showResults && !isAnswered && "bg-gray-300"
