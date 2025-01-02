@@ -139,7 +139,7 @@ const Test = () => {
           </div>
         </div>
 
-        <div className="fixed left-4 top-32 space-y-8">
+        <div className="fixed left-4 top-32 flex flex-col space-y-8">
           <div className="bg-white p-4 rounded-lg shadow-lg w-40">
             <QuestionNavigation
               totalQuestions={test.questions.length}
@@ -150,7 +150,7 @@ const Test = () => {
             />
           </div>
 
-          <div className="bg-white p-4 rounded-lg shadow-lg w-40">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-40 mt-4">
             {Object.entries(questionsByCategory).map(([category, questions]) => (
               <div key={category} className="mb-4 last:mb-0">
                 <h3 className="font-semibold text-xs text-gray-600 mb-2">{category}</h3>
