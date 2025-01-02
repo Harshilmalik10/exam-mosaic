@@ -139,19 +139,21 @@ const Test = () => {
           </div>
         </div>
 
-        <div className="fixed left-4 top-32 bg-white p-4 rounded-lg shadow-lg w-40">
-          <QuestionNavigation
-            totalQuestions={test.questions.length}
-            currentQuestion={currentQuestion}
-            answers={answers}
-            visitedQuestions={visitedQuestions}
-            onQuestionSelect={setCurrentQuestion}
-          />
+        <div className="fixed left-4 top-32 space-y-8">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-40">
+            <QuestionNavigation
+              totalQuestions={test.questions.length}
+              currentQuestion={currentQuestion}
+              answers={answers}
+              visitedQuestions={visitedQuestions}
+              onQuestionSelect={setCurrentQuestion}
+            />
+          </div>
 
-          <div className="mt-8 space-y-4 text-sm">
+          <div className="bg-white p-4 rounded-lg shadow-lg w-40">
             {Object.entries(questionsByCategory).map(([category, questions]) => (
-              <div key={category} className="space-y-2">
-                <h3 className="font-semibold text-xs text-gray-600">{category}</h3>
+              <div key={category} className="mb-4 last:mb-0">
+                <h3 className="font-semibold text-xs text-gray-600 mb-2">{category}</h3>
                 <div className="grid grid-cols-4 gap-1">
                   {questions.map((question) => {
                     const questionIndex = test.questions.findIndex(q => q.id === question.id);
